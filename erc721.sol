@@ -89,5 +89,4 @@ contract ERC721_CONTRACT is
         require(balance > 0, "No funds available for withdrawal");
         payable(owner()).transfer(balance);
     }
-
 }
