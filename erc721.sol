@@ -83,6 +83,7 @@ contract ERC721_CONTRACT is
 /// @notice Emitted when the maximum supply per address is updated.
 /// @param maxSupplyPerAddress The new maximum supply limit per address.
     event MaxSupplyPerAddressUpdated(uint256 indexed  maxSupplyPerAddress);
+
     
 /// @notice Error thrown when an attempt is made to mint more than the maximum supply.
     error MaxSupplyExceeded();
@@ -161,9 +162,7 @@ contract ERC721_CONTRACT is
         }
         uint256 arrayLength = _mintAmount;
         for (uint256 i = 0; i < arrayLength; ++i) {
-            unchecked {
-                supply++;
-            }
+            supply++;
             _safeMint(_to, supply);
             emit Minted(_to, supply, _mintAmount);
         }
@@ -178,9 +177,7 @@ contract ERC721_CONTRACT is
     {
         uint256 arrayLength = _receivers.length;
         for (uint256 i = 0; i < arrayLength; ++i) {
-            unchecked {
-                supply++;
-            }
+            supply++;
             _safeMint(_receivers[i], supply);
             emit Dropped(_receivers[i], supply);
         }
@@ -219,11 +216,10 @@ contract ERC721_CONTRACT is
 
 /// @notice Withdraws the contract's balance to the owner's address
 /// @dev Can only be called by the contract owner and is non-reentrant
-    function withdraw() external onlyOwner nonReentrant {
-        uint256 balance = address(this).balance;
-        if (balance == 0) revert NoFundsAvailable();
-        AddressUpgradeable.sendValue(payable(owner()), balance);
+function withdraw() external onlyOwner nonReentrant {
+    uint256 balance = address(this).balance;
+    if (balance == 0) revert NoFundsAvailable();
+    (bool sent, ) = owner().call{value: balance}("");
+    require(sent, "Failed to send Ether");
     }
 }
-
-
