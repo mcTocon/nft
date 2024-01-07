@@ -111,7 +111,6 @@ error NoFundsAvailable();
         if (msg.sender != owner()) {
             if (msg.value < cost * _mintAmount) revert InsufficientFunds();
             if (IERC721(this).balanceOf(_to) + _mintAmount > maxSupplyPerAddress) revert MaxSupplyPerAddressExceeded();
-            
         }
         uint256 arrayLength = _mintAmount;
         for (uint256 i = 0; i < arrayLength; i++) {
