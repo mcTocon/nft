@@ -2,20 +2,15 @@
 
 pragma solidity 0.8.20;
 
-/*
-@author TOCON.IO
-@custom:security-contact support@tocon.io
-
-_______________________________________________________________________________________________________       
-_______/\\\__________________________________________________________________________/\\\_______________      
-_____/\\\\\\\\\\\_____/\\\\\________/\\\\\\\\_____/\\\\\_____/\\/\\\\\\______________\///______/\\\\\____     
-_____\////\\\////____/\\\///\\\____/\\\//////____/\\\///\\\__\/\\\////\\\______________/\\\___/\\\///\\\__    
-_________\/\\\_______/\\\__\//\\\__/\\\__________/\\\__\//\\\_\/\\\__\//\\\____________\/\\\__/\\\__\//\\\_   
-__________\/\\\_/\\__\//\\\__/\\\__\//\\\________\//\\\__/\\\__\/\\\___\/\\\____________\/\\\_\//\\\__/\\\__  
-___________\//\\\\\____\///\\\\\/____\///\\\\\\\\__\///\\\\\/___\/\\\___\/\\\____/\\\____\/\\\__\///\\\\\/___ 
-_____________\/////_______\/////________\////////_____\/////_____\///____\///____\///_____\///_____\/////_____
-_______________________________________________________________________________________________________________                 
-*/  
+///_______________________________________________________________________________________________________       
+////______/\\\__________________________________________________________________________/\\\_______________      
+/////___/\\\\\\\\\\\_____/\\\\\________/\\\\\\\\_____/\\\\\_____/\\/\\\\\\______________\///______/\\\\\____     
+//////__\////\\\////____/\\\///\\\____/\\\//////____/\\\///\\\__\/\\\////\\\______________/\\\___/\\\///\\\__    
+///////_____\/\\\_______/\\\__\//\\\__/\\\__________/\\\__\//\\\_\/\\\__\//\\\____________\/\\\__/\\\__\//\\\_   
+////////_____\/\\\_/\\__\//\\\__/\\\__\//\\\________\//\\\__/\\\__\/\\\___\/\\\____________\/\\\_\//\\\__/\\\__  
+/////////_____\//\\\\\____\///\\\\\/____\///\\\\\\\\__\///\\\\\/___\/\\\___\/\\\____/\\\____\/\\\__\///\\\\\/___ 
+//////////______\/////_______\/////________\////////_____\/////_____\///____\///____\///_____\///_____\/////_____
+///////////_______________________________________________________________________________________________________                 
 
 // Explicit imports from OpenZeppelin
 import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
@@ -23,7 +18,11 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 
-/// @title A customizable ERC721 token contract with minting and dropping functionality
+/**
+ * @title A customizable ERC721 token contract
+ * @author TOCON.IO
+ * @custom:security-contact support@tocon.io
+ */
 contract ERC721_CONTRACT is
     Initializable,
     ERC721Upgradeable,
@@ -58,8 +57,6 @@ contract ERC721_CONTRACT is
     //      After adding new variables, the size of this array should be reduced accordingly to maintain the alignment of storage slots.
     uint256[20] private _gap;
 
-
-
     /// @notice Emitted when a new token is minted.
     /// @param to The address receiving the minted token.
     /// @param tokenId The unique identifier for the minted token.
@@ -83,7 +80,6 @@ contract ERC721_CONTRACT is
     /// @param maxSupplyPerAddress The new maximum supply limit per address.
     event MaxSupplyPerAddressUpdated(uint256 indexed  maxSupplyPerAddress);
 
-    
     /// @notice Error thrown when an attempt is made to mint more than the maximum supply.
     error MaxSupplyExceeded();
     /// @notice Error thrown when an attempt is made to mint more than the allowed maximum supply per address.
@@ -94,18 +90,17 @@ contract ERC721_CONTRACT is
     error InsufficientFunds();
     /// @notice Error thrown when there are no funds available for a requested operation.
     error NoFundsAvailable();
-
     
-    ///@notice Initializes the contract with necessary parameters
-    ///@param owner The address of the contract owner
-    ///@param _metadataURI The base URI for token metadata
-    ///@param _name The name of the ERC721 token
-    ///@param _symbol The symbol of the ERC721 token
-    ///@param _cost The cost of minting each token
-    ///@param _maxSupply The maximum supply of tokens
-    ///@param _maxSupplyPerAddress The maximum number of tokens that can be owned by a single address
-    ///@param _limited Flag indicating if the token has a limited supply
-    ///@param _limitedPerAddress Flag indicating if there is a limit per address
+    /// @notice Initializes the contract with necessary parameters
+    /// @param owner The address of the contract owner
+    /// @param _metadataURI The base URI for token metadata
+    /// @param _name The name of the ERC721 token
+    /// @param _symbol The symbol of the ERC721 token
+    /// @param _cost The cost of minting each token
+    /// @param _maxSupply The maximum supply of tokens
+    /// @param _maxSupplyPerAddress The maximum number of tokens that can be owned by a single address
+    /// @param _limited Flag indicating if the token has a limited supply
+    /// @param _limitedPerAddress Flag indicating if there is a limit per address
     function initialize(
         address owner,
         string memory _metadataURI,
@@ -218,7 +213,7 @@ contract ERC721_CONTRACT is
         uint256 balance = address(this).balance;
         if (balance == 0) revert NoFundsAvailable();
         (bool sent, ) = owner().call{value: balance}("");
-        require(sent, "Failed to send Ether");
+        require(sent, "Failed to send balance");
     }
 }
 
