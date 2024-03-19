@@ -269,3 +269,4 @@ contract ERC721_CONTRACT is
         require(sent, "Failed to send balance");
     }
 }
+
