@@ -2,6 +2,10 @@
 
 pragma solidity 0.8.22;
 
+/// @title A customizable ERC721 token contract.
+/// @author TOCON.IO.
+/// @custom:security-contact security@tocon.io
+
 ///_______________________________________________________________________________________________________
 ////______/\\\__________________________________________________________________________/\\\_______________
 /////___/\\\\\\\\\\\_____/\\\\\________/\\\\\\\\_____/\\\\\_____/\\/\\\\\\______________\///______/\\\\\____
@@ -11,10 +15,6 @@ pragma solidity 0.8.22;
 /////////_____\//\\\\\____\///\\\\\/____\///\\\\\\\\__\///\\\\\/___\/\\\___\/\\\____/\\\____\/\\\__\///\\\\\/___
 //////////______\/////_______\/////________\////////_____\/////_____\///____\///____\///_____\///_____\/////_____
 ///////////_______________________________________________________________________________________________________
-
-/// @title A customizable ERC721 token contract.
-/// @author TOCON.IO.
-/// @custom:security-contact support@tocon.io.
 
 // Explicit imports from OpenZeppelin.
 import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
@@ -107,6 +107,8 @@ contract ERC721_CONTRACT is
     error NoFundsAvailable();
     /// @notice Error thrown when unauthorized access attempts occur.
     error UnauthorizedAccess();
+    /// @notice Error thrown when failing to send funds.
+    error WithdrawFailed();
 
     // ============================================ initialize ============================================
 
@@ -268,6 +270,6 @@ contract ERC721_CONTRACT is
         uint256 balance = address(this).balance;
         if (balance == 0) revert NoFundsAvailable();
         (bool sent, ) = owner().call{value: balance}("");
-        require(sent, "Failed to send balance");
+        if (!sent) revert WithdrawFailed();
     }
 }
