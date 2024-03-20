@@ -2,9 +2,9 @@
 
 pragma solidity 0.8.22;
 
-/// @custom:security-contact security@tocon.io
 /// @title A customizable ERC721 token contract.
 /// @author TOCON.IO.
+/// @custom:security-contact security@tocon.io
 
 ///_______________________________________________________________________________________________________
 ////______/\\\__________________________________________________________________________/\\\_______________
@@ -63,6 +63,28 @@ contract ERC721_CONTRACT is
     uint256[20] private _gap;
 
     // ============================================== Events ==============================================
+
+    /// @notice Emitted when the contract is initialized.
+    /// @param owner The address of the contract owner.
+    /// @param metadataURI The base URI for token metadata.
+    /// @param name The name of the ERC721 token.
+    /// @param symbol The symbol of the ERC721 token.
+    /// @param cost The cost of minting each token.
+    /// @param maxSupply The maximum supply of tokens.
+    /// @param maxSupplyPerAddress The maximum number of tokens that can be owned by a single address.
+    /// @param limited Flag indicating if the token has a limited supply.
+    /// @param limitedPerAddress Flag indicating if there is a limit per address.
+    event ERC721Initialized(
+        address indexed owner,
+        string metadataURI,
+        string indexed name,
+        string indexed symbol,
+        uint256 cost,
+        uint256 maxSupply,
+        uint256 maxSupplyPerAddress,
+        bool limited,
+        bool limitedPerAddress
+    );
 
     /// @notice Emitted when a new token is minted.
     /// @param to The address receiving the minted token.
@@ -148,6 +170,17 @@ contract ERC721_CONTRACT is
         } else {
             maxSupplyPerAddress = _maxSupplyPerAddress;
         }
+        emit ERC721Initialized(
+            owner,
+            metadataURI,
+            _name,
+            _symbol,
+            cost,
+            maxSupply,
+            maxSupplyPerAddress,
+            limited,
+            limitedPerAddress
+        );
     }
 
     // ============================================ Modifiers ============================================
@@ -215,7 +248,6 @@ contract ERC721_CONTRACT is
     }
 
     /// @notice Burns a specific token by its unique token ID.
-    /// @dev Requires caller to be the token's owner or the contract owner.
     /// @param _tokenId The unique identifier for the token to be burned.
     function burn(uint256 _tokenId) external {
         address tokenOwner = ownerOf(_tokenId);
