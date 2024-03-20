@@ -2,9 +2,9 @@
 
 pragma solidity 0.8.22;
 
+/// @custom:security-contact security@tocon.io
 /// @title A customizable ERC721 token contract.
 /// @author TOCON.IO.
-/// @custom:security-contact security@tocon.io
 
 ///_______________________________________________________________________________________________________
 ////______/\\\__________________________________________________________________________/\\\_______________
