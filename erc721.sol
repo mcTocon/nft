@@ -53,7 +53,7 @@ contract ERC721_CONTRACT is
     string public metadataURI;
 
     /// @notice Tracks balance of tokens minted per address.
-    mapping(address => uint256) public mintedBalance;
+    mapping(address account => uint256 balance) public mintedBalance;
 
     // @notice Reserved storage space to allow for layout changes in the future.
     // @dev This is a placeholder array of 20 uint256, used to ensure that storage layout remains compatible when the contract is upgraded.
@@ -63,28 +63,6 @@ contract ERC721_CONTRACT is
     uint256[20] private _gap;
 
     // ============================================== Events ==============================================
-
-    /// @notice Emitted when the contract is initialized.
-    /// @param owner The address of the contract owner.
-    /// @param metadataURI The base URI for token metadata.
-    /// @param name The name of the ERC721 token.
-    /// @param symbol The symbol of the ERC721 token.
-    /// @param cost The cost of minting each token.
-    /// @param maxSupply The maximum supply of tokens.
-    /// @param maxSupplyPerAddress The maximum number of tokens that can be owned by a single address.
-    /// @param limited Flag indicating if the token has a limited supply.
-    /// @param limitedPerAddress Flag indicating if there is a limit per address.
-    event Initialized(
-        address indexed owner,
-        string metadataURI,
-        string indexed name,
-        string indexed symbol,
-        uint256 cost,
-        uint256 maxSupply,
-        uint256 maxSupplyPerAddress,
-        bool limited,
-        bool limitedPerAddress
-    );
 
     /// @notice Emitted when a new token is minted.
     /// @param to The address receiving the minted token.
@@ -168,18 +146,6 @@ contract ERC721_CONTRACT is
         } else {
             maxSupplyPerAddress = _maxSupplyPerAddress;
         }
-
-        emit Initialized(
-            owner,
-            metadataURI,
-            _name,
-            _symbol,
-            cost,
-            maxSupply,
-            maxSupplyPerAddress,
-            limited,
-            limitedPerAddress
-        );
     }
 
     // ============================================ Modifiers ============================================
