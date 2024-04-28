@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.22;
+pragma solidity 0.8.25;
 
 /// @title A customizable ERC721 token contract.
 /// @author TOCON.IO.
@@ -48,6 +48,9 @@ contract ERC721_CONTRACT is
 
     /// @notice Flag indicating if there is a limit per address.
     bool public limitedPerAddress;
+    
+    /// @notice Flag indicating if the mint function is currently paused.
+    bool public pause;
 
     /// @notice Base URI for token metadata.
     string public metadataURI;
@@ -117,6 +120,10 @@ contract ERC721_CONTRACT is
     /// @param maxSupplyPerAddress The new maximum supply limit per address.
     event MaxSupplyPerAddressUpdated(uint256 indexed maxSupplyPerAddress);
 
+    /// @notice Emitted when the contract pause state is changed.
+    /// @param pause The new pause state of the contract.
+    event pausedContract(bool indexed pause);
+
     // ============================================== Errors ==============================================
 
     /// @notice Error thrown when an attempt is made to mint more than the maximum supply.
@@ -131,6 +138,8 @@ contract ERC721_CONTRACT is
     error UnauthorizedAccess();
     /// @notice Error thrown when failing to send funds.
     error WithdrawFailed();
+    /// @notice Error thrown when the contract is paused.
+    error Paused();
 
     // ============================================ initialize ============================================
 
@@ -222,6 +231,7 @@ contract ERC721_CONTRACT is
         userPermissions(_mintAmount, _to)
         nonReentrant
     {
+        if (pause) revert Paused();
         uint256 arrayLength = _mintAmount;
         for (uint256 i = 0; i < arrayLength; ++i) {
             supply++;
@@ -259,6 +269,7 @@ contract ERC721_CONTRACT is
     }
 
     /// @notice Sets the maximum supply of tokens per address.
+    /// @dev Can only be called by the contract owner.
     /// @param _maxSupplyPerAddress The new maximum supply per address.
     function setMaxSupplyPerAddress(uint256 _maxSupplyPerAddress)
         external
@@ -266,11 +277,13 @@ contract ERC721_CONTRACT is
     {
         if (_maxSupplyPerAddress > maxSupply)
             revert MaxSupplyPerAddressExceeded();
+        limitedPerAddress = true;
         maxSupplyPerAddress = _maxSupplyPerAddress;
         emit MaxSupplyPerAddressUpdated(_maxSupplyPerAddress);
     }
 
     /// @notice Updates the base URI for token metadata.
+    /// @dev Can only be called by the contract owner.
     /// @param _metadataURI The new base URI.
     function setTokenURI(string memory _metadataURI) external onlyOwner {
         metadataURI = _metadataURI;
@@ -278,10 +291,19 @@ contract ERC721_CONTRACT is
     }
 
     /// @notice Sets the cost of minting a token.
+    /// @dev Can only be called by the contract owner.
     /// @param _cost The new cost per token.
     function setCost(uint256 _cost) external onlyOwner {
         cost = _cost;
         emit CostSet(_cost);
+    }
+
+    /// @notice Sets the pause state of the mint function.
+    /// @dev Can only be called by the contract owner.
+    /// @param _pause The new pause state for the mint function.
+    function setPause(bool _pause) external onlyOwner {
+        pause = _pause;
+        emit pausedContract(_pause);
     }
 
     /// @notice Returns the URI for a given token's metadata.
